@@ -16,15 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import create_user,signin_user,forgot_password,logout_user
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import create_user, forgot_password, logout_user, TodoAPIView, CustomTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('create_user',create_user,name='create_user'),
+    path('create_user', create_user, name='create_user'),
     # path('signin_user',signin_user,name='signin_user'),
-    path('forgot_password',forgot_password,name='forgot_password'),
-    path('logout_user',logout_user,name='logout_user'),
-    path('signin_user', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('forgot_password', forgot_password, name='forgot_password'),
+    path('logout_user', logout_user, name='logout_user'),
+    path('signin_user', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('tokenrefresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('todos', TodoAPIView.as_view(), name='todos'),
 ]

@@ -2,9 +2,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import logout
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.views import APIView
+from .models import Todo
+from .serializers import TodoSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 @api_view(['POST'])
 def create_user(request):
@@ -28,19 +32,6 @@ def create_user(request):
 
     return Response({'message': 'User created successfully.'}, status=status.HTTP_201_CREATED)
     
-
-@api_view(['POST'])
-def signin_user(request):
-    data = request.data
-    username = data.get('username')
-    password = data.get('password')
-
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return Response({'message': 'User signed in successfully.'}, status=status.HTTP_200_OK)
-
-    return Response({'error': 'Invalid username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -74,14 +65,48 @@ class TodoAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        todos = Todo.objects.all()
+        username = request.user.username
+        todos = Todo.objects.filter(user__username=username)
         serializer = TodoSerializer(todos, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         data = request.data
-        serializer = TodoSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        title = data.get('title')
+        if not title:
+            return Response({'error': 'Title is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        todo = Todo.objects.create(title=title, user=request.user)
+        todo.save()
+        return Response('Todo Created Successfully', status=status.HTTP_201_CREATED)
+    
+    
+    def delete(self, request):
+        data = request.data
+        id = data.get('id')
+        try:
+            todo = Todo.objects.get(id=id)
+        except Todo.DoesNotExist:
+            return Response({'error': 'Todo does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        todo.delete()
+        return Response({'message': 'Todo deleted successfully.'}, status=status.HTTP_200_OK)
+    
+    def put(self, request):
+        data = request.data
+        id = data.get('id')
+        try:
+            todo = Todo.objects.get(id=id)
+        except Todo.DoesNotExist:
+            return Response({'error': 'Todo does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        todo.is_completed = True
+        todo.save()
+        return Response({'message': 'Todo completed successfully.'}, status=status.HTTP_200_OK)
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data.update({'username': self.user.username})
+        return data
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

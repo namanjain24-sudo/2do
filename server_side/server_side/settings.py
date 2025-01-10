@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'server_side',  
 ]
 
 MIDDLEWARE = [
@@ -137,8 +138,22 @@ REST_FRAMEWORK = {
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Access token lifetime
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Access token lifetime
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Refresh token lifetime
     'ROTATE_REFRESH_TOKENS': False,  # If set to True, refresh tokens will be rotated
     'BLACKLIST_AFTER_ROTATION': True,  # If set to True, old refresh tokens will be blacklisted after a new one is issued
 }
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500/",
+    "http://localhost:5500/",
+]
+
+INSTALLED_APPS += [
+    'corsheaders',
+]
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+] + MIDDLEWARE
