@@ -109,3 +109,9 @@
     margin-top:0.7rem;
     text-align: center;
   }
+  .forgot-password{
+    margin-bottom:1rem;
+    margin-top: -0.5rem;
+    /* margin-left:9rem; */
+    text-align: end;
+  }
