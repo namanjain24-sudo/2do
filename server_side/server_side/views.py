@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-from django.core.mail import send_mail
-from django.utils.crypto import get_random_string
+from rest_framework.permissions import IsAuthenticated
+
 
 @api_view(['POST'])
 def create_user(request):
@@ -42,6 +42,7 @@ def signin_user(request):
 
     return Response({'error': 'Invalid username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
 def forgot_password(request):
     data = request.data
@@ -60,13 +61,27 @@ def forgot_password(request):
 
     user.set_password(new_password)
     user.save()
-
-    send_mail(
-        'Password Reset',
-        'Your Password was changed successfully',
-        '',
-        [email],
-        fail_silently=False,
-    )
-
     return Response({'message': 'New password has been sent to your email.'}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def logout_user(request):
+    logout(request)
+    return Response({'message': 'User logged out successfully.'}, status=status.HTTP_200_OK)
+
+
+class TodoAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        todos = Todo.objects.all()
+        serializer = TodoSerializer(todos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = request.data
+        serializer = TodoSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

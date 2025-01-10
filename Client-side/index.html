@@ -12,20 +12,20 @@
           <form class="signup-form">
             <h2>Signup Form</h2>
             <div class="toggle-container">
-              <button type="button" class="toggle-btn">Login</button>
-              <button type="button" class="toggle-btn active">Signup</button>
+              <button type="button" class="toggle-btn" id="login-btn">Login</button>
+              <button type="button" class="toggle-btn active" id="signup-btn">Signup</button>
             </div>
-            <div class="form-group">
-                <input type="text" placeholder="Username" required>
+            <div class="form-group" id="username-group">
+                <input type="text" placeholder="Username" id="username" required>
               </div>
-            <div class="form-group">
-              <input type="email" placeholder="Email Address" required>
+            <div class="form-group" id="email-group">
+              <input type="email" placeholder="Email Address" id="email" required>
             </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" required>
+            <div class="form-group" id="password-group">
+              <input type="password" placeholder="Password" id='password' required>
             </div>
-            <button type="submit" class="submit-btn">Signup</button>
-            <p class="link">Already have an account? <a href="#" class="login-link">Login</a></p>
+            <button type="submit" class="submit-btn" id="submit-btn">Signup</button>
+            <p class="link" id="suggestion">Already have an account? <a href="#" class="login-link">Login</a></p>
           </form>
         </div>
 
