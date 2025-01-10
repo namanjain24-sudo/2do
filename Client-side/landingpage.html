@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List</title>
+    <link rel="stylesheet" href="Static-css/landingpage.css">
+  </head>
+  <body>
+    <div class="background-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+
+    <div class="container" id="app-container">
+      <div class="todo-card" id="todo-card">
+        <div class="header" id="app-header">
+          <div class="user-info" id="user-info">
+            Welcome, Username
+          </div>
+          <button class="logout-btn" id="logout-btn">Logout</button>
+        </div>
+        
+        <div class="todo-content" id="todo-content">
+          <h1>My Todo List</h1>
+
+          <div class="add-todo" id="add-todo-form">
+            <input type="text" id="new-todo-input" placeholder="Add a new todo...">
+            <button id="add-todo-btn">Add</button>
+          </div>
+
+          <div class="todo-list" id="todo-list">
+            <div class="todo-item completed" id="todo-1">
+              <div class="todo-left">
+                <input type="checkbox" class="todo-checkbox" id="checkbox-1" checked>
+                <span class="todo-text">Complete the project documentation</span>
+              </div>
+              <button class="delete-btn" id="delete-1">Delete</button>
+            </div>
+
+            <div class="todo-item" id="todo-2">
+              <div class="todo-left">
+                <input type="checkbox" class="todo-checkbox" id="checkbox-2">
+                <span class="todo-text">Design new landing page</span>
+              </div>
+              <button class="delete-btn" id="delete-2">Delete</button>
+            </div>
+
+            <div class="todo-item" id="todo-3">
+              <div class="todo-left">
+                <input type="checkbox" class="todo-checkbox" id="checkbox-3">
+                <span class="todo-text">Review pull requests</span>
+              </div>
+              <button class="delete-btn" id="delete-3">Delete</button>
+            </div>
+
+            <div class="todo-item" id="todo-4">
+              <div class="todo-left">
+                <input type="checkbox" class="todo-checkbox" id="checkbox-4">
+                <span class="todo-text">Update user documentation</span>
+              </div>
+              <button class="delete-btn" id="delete-4">Delete</button>
+            </div>
+          </div>
+
+          <div class="todo-stats" id="todo-stats">
+            3 items left
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="static-js/landingpage.js" defer></script>
+
+  </body>
+</html>
