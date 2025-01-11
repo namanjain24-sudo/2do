@@ -28,5 +28,4 @@ let signupBtn = document.getElementById('signup-btn');
         }
         signupBtn.addEventListener('click', showSignupForm);
         loginBtn.addEventListener('click', showLoginForm);
-
         loginLink.addEventListener('click', showLoginForm);
