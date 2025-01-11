@@ -9,3 +9,4 @@ class TodoSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'title': {'required': True, 'allow_blank': False}
         }
+

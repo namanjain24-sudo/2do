@@ -3,12 +3,17 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from .models import Todo
 from .serializers import TodoSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+import random
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 @api_view(['POST'])
 def create_user(request):
@@ -110,3 +115,49 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+
+class otprequest(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        data = request.data
+        email = data.get('email')
+
+        # generate otp
+        global otp
+        otp = random.randint(1000, 9999)
+
+        # Email account credentials
+        from_address = "acrossdevice01@gmail.com"
+        password = "bapw oify vutv fuau"
+
+        # send email to 
+        to_address = email
+
+        # Email content
+        subject = "Verify Otp for Todo App"
+        body = f"your otp for password reset is {otp} ."
+
+        msg = MIMEMultipart()
+        msg['From'] = from_address
+        msg['To'] = to_address
+        msg['Subject'] = subject
+
+        # Attach the body with the msg instance
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Create server object with SSL option
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        
+        server.login(from_address, password)
+        server.sendmail(from_address, to_address, msg.as_string())
+        server.quit()
+
+        return Response({
+            'status': True,
+            'message': 'Otp successfully sent',
+            'otp': f'{otp}'
+        }, status.HTTP_200_OK)
