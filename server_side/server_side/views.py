@@ -2,9 +2,18 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate,login,logout
-from django.core.mail import send_mail
-from django.utils.crypto import get_random_string
+from django.contrib.auth import logout
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.views import APIView
+from .models import Todo
+from .serializers import TodoSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+import random
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 @api_view(['POST'])
 def create_user(request):
@@ -29,18 +38,6 @@ def create_user(request):
     return Response({'message': 'User created successfully.'}, status=status.HTTP_201_CREATED)
     
 
-@api_view(['POST'])
-def signin_user(request):
-    data = request.data
-    username = data.get('username')
-    password = data.get('password')
-
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return Response({'message': 'User signed in successfully.'}, status=status.HTTP_200_OK)
-
-    return Response({'error': 'Invalid username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def forgot_password(request):
@@ -60,13 +57,107 @@ def forgot_password(request):
 
     user.set_password(new_password)
     user.save()
-
-    send_mail(
-        'Password Reset',
-        'Your Password was changed successfully',
-        '',
-        [email],
-        fail_silently=False,
-    )
-
     return Response({'message': 'New password has been sent to your email.'}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def logout_user(request):
+    logout(request)
+    return Response({'message': 'User logged out successfully.'}, status=status.HTTP_200_OK)
+
+
+class TodoAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        username = request.user.username
+        todos = Todo.objects.filter(user__username=username)
+        serializer = TodoSerializer(todos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = request.data
+        title = data.get('title')
+        if not title:
+            return Response({'error': 'Title is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        todo = Todo.objects.create(title=title, user=request.user)
+        todo.save()
+        return Response('Todo Created Successfully', status=status.HTTP_201_CREATED)
+    
+    
+    def delete(self, request):
+        data = request.data
+        id = data.get('id')
+        try:
+            todo = Todo.objects.get(id=id)
+        except Todo.DoesNotExist:
+            return Response({'error': 'Todo does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        todo.delete()
+        return Response({'message': 'Todo deleted successfully.'}, status=status.HTTP_200_OK)
+    
+    def put(self, request):
+        data = request.data
+        id = data.get('id')
+        try:
+            todo = Todo.objects.get(id=id)
+        except Todo.DoesNotExist:
+            return Response({'error': 'Todo does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        todo.is_completed = True
+        todo.save()
+        return Response({'message': 'Todo completed successfully.'}, status=status.HTTP_200_OK)
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data.update({'username': self.user.username})
+        return data
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+
+
+class otprequest(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        data = request.data
+        email = data.get('email')
+
+        # generate otp
+        global otp
+        otp = random.randint(1000, 9999)
+
+        # Email account credentials
+        from_address = "acrossdevice01@gmail.com"
+        password = "bapw oify vutv fuau"
+
+        # send email to 
+        to_address = email
+
+        # Email content
+        subject = "Verify Otp for Todo App"
+        body = f"your otp for password reset is {otp} ."
+
+        msg = MIMEMultipart()
+        msg['From'] = from_address
+        msg['To'] = to_address
+        msg['Subject'] = subject
+
+        # Attach the body with the msg instance
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Create server object with SSL option
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        
+        server.login(from_address, password)
+        server.sendmail(from_address, to_address, msg.as_string())
+        server.quit()
+
+        return Response({
+            'status': True,
+            'message': 'Otp successfully sent',
+            'otp': f'{otp}'
+        }, status.HTTP_200_OK)
