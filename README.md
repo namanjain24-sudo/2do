@@ -27,7 +27,7 @@ To set up and run the project, follow these steps:
 
 1. **Clone the repository**:
     ```sh
-    git clone <repository_url>
+    git clone https://github.com/namanjain24-sudo/2do.git
     cd 2do
     ```
 
