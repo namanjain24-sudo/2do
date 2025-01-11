@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="Static-css/otp.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Enter Verification Code</h2>
+        <p class="description">We have sent a verification code to your registered email address</p>
+        
+        <div class="otp-container">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+        </div>
+
+        <button type="submit">Verify Code</button>
+
+        <div class="resend-code">
+            Didn't receive the code?<a href="#">Resend Code</a>
+        </div>
+
+        <div class="back-to-login">
+            <a href="#">← Back to Login</a>
+        </div>
+    </div>
+</body>
+</html>
