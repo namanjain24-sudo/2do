@@ -33,6 +33,7 @@ To set up and run the project, follow these steps:
 
 2. **Run the setup and run script**:
     ```sh
+    chmod 777 setup_and_run.sh
     ./setup_and_run.sh
     ```
 
@@ -43,6 +44,12 @@ To set up and run the project, follow these steps:
 
 3. **Access the application**:
     Open your web browser and go to `http://127.0.0.1:8000/`.
+
+4. **Stop the server**:
+to stop the server press ctrl + c and to deactivate virtual environment in terminal
+    ```sh
+    source deactivate
+    ```
 
 ## How to Contribute
 

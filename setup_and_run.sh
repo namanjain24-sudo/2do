@@ -9,6 +9,9 @@ source venv/bin/activate
 # Install the required packages from requirements.txt
 pip install -r requirements.txt
 
+# navigating to backend
+cd server_side
+
 # Run the Django migrations
 python manage.py migrate
 

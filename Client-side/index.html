@@ -9,12 +9,13 @@
 <body>
     <body>
         <div class="form-container">
-          <form class="signup-form">
+          <form class="signup-form" id="signup-form">
             <h2 id="form-heading">Signup Form</h2>
             <div class="toggle-container">
               <button type="button" class="toggle-btn" id="login-btn">Login</button>
               <button type="button" class="toggle-btn active" id="signup-btn">Signup</button>
             </div>
+            <p id="message"></p>
             <div class="form-group" id="username-group">
                 <input type="text" placeholder="Username" required id="username">
               </div>
@@ -26,10 +27,11 @@
             </div>
 
             <p class="forgot-password" id="forgot-password" style="display: none;"><a href="#" id="forgot-password-link">Forgot Password?</a></p>
-            <button type="submit" class="submit-btn" id="submit-btn">Signup</button>
-            <p class="link" id="suggestion">Already have an account? <a href="#" class="login-link">Login</a></p>
+            <button class="submit-btn" id="submit-btn">Signup</button>
+            <p class="link" id="suggestion">Already have an account? <a href="#" class="login-link" id="login-link">Login</a></p>
           </form>
         </div>
           <script src="static-js/auth.js"></script>
+          <script src="static-js/auth-api.js"></script>
 </body>
 </html>

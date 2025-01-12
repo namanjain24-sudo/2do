@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-3*dpvp*gshn=c7i4s+q#a9_1tboos^86aqvbl#$m422gx1*%^c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','[::1]']
+
 
 
 # Application definition
@@ -41,9 +43,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'server_side',  
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -134,6 +138,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+   
 }
 
 # JWT settings
@@ -144,16 +149,8 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,  # If set to True, old refresh tokens will be blacklisted after a new one is issued
 }
 
-# CORS settings
+
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
-    "http://localhost:5500",
 ]
 
-INSTALLED_APPS += [
-    'corsheaders',
-]
-
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-] + MIDDLEWARE
