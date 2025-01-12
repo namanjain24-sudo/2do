@@ -1,78 +1,74 @@
-const addTodoInput = document.getElementById('new-todo-input');
-const addTodoBtn = document.getElementById('add-todo-btn');
-const todoList = document.getElementById('todo-list');
-const todoStats = document.getElementById('todo-stats');
+const addTodoInput = document.getElementById("new-todo-input");
+const addTodoBtn = document.getElementById("add-todo-btn");
+const todoList = document.getElementById("todo-list");
+const todoStats = document.getElementById("todo-stats");
+
+let todos = [];
+
+function renderTodos() {
+  todoList.innerHTML = "";
+  todos.forEach((todo, index) => {
+    const todoItem = document.createElement("div");
+    todoItem.className = `todo-item ${todo.completed ? "completed" : ""}`;
+
+    const todoLeft = document.createElement("div");
+    todoLeft.className = "todo-left";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "todo-checkbox";
+    checkbox.checked = todo.completed;
+    checkbox.addEventListener("change", () => toggleTodo(index));
+
+    const todoText = document.createElement("span");
+    todoText.className = "todo-text";
+    todoText.textContent = todo.text;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => deleteTodo(index));
+
+    todoLeft.appendChild(checkbox);
+    todoLeft.appendChild(todoText);
+    todoItem.appendChild(todoLeft);
+    todoItem.appendChild(deleteBtn);
+    todoList.appendChild(todoItem);
+  });
+
+  updateStats();
+}
+
+function addTodo() {
+  const todoText = addTodoInput.value.trim();
+  if (todoText === "") {
+    alert("Please enter a todo");
+    return;
+  }
+
+  todos.push({ text: todoText, completed: false });
+  addTodoInput.value = "";
+  renderTodos();
+}
+
+function deleteTodo(index) {
+  todos.splice(index, 1);
+  renderTodos();
+}
+function toggleTodo(index) {
+  todos[index].completed = !todos[index].completed;
+  renderTodos();
+}
 
 function updateStats() {
-  const remainingItems = document.querySelectorAll(
-    '.todo-item:not(.completed)'
-  ).length;
-  todoStats.textContent = `${remainingItems} items left`;
+  const itemsLeft = todos.filter(todo => !todo.completed).length;
+  todoStats.textContent = `${itemsLeft} item${itemsLeft !== 1 ? "s" : ""} left`;
 }
-function createTodoItem(text, isCompleted = false) {
-  const todoId = `todo-${Date.now()}`;
+addTodoBtn.addEventListener("click", addTodo);
 
-  const todoItem = document.createElement('div');
-  todoItem.className = `todo-item ${isCompleted ? 'completed' : ''}`;
-  todoItem.id = todoId;
-
-  const todoLeft = document.createElement('div');
-  todoLeft.className = 'todo-left';
-
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.className = 'todo-checkbox';
-  checkbox.checked = isCompleted;
-  checkbox.addEventListener('change', () => {
-    todoItem.classList.toggle('completed');
-    updateStats();
-  });
-
-  const todoText = document.createElement('span');
-  todoText.className = 'todo-text';
-  todoText.textContent = text;
-
-  const deleteBtn = document.createElement('button');
-  deleteBtn.className = 'delete-btn';
-  deleteBtn.textContent = 'Delete';
-  deleteBtn.addEventListener('click', () => {
-    todoItem.remove();
-    updateStats();
-  });
-
-  todoLeft.appendChild(checkbox);
-  todoLeft.appendChild(todoText);
-  todoItem.appendChild(todoLeft);
-  todoItem.appendChild(deleteBtn);
-
-  return todoItem;
-}
-
-addTodoBtn.addEventListener('click', () => {
-  const todoText = addTodoInput.value.trim();
-
-  if (todoText !== '') {
-    const newTodoItem = createTodoItem(todoText);
-    todoList.appendChild(newTodoItem);
-    addTodoInput.value = '';
-    updateStats();
-  } else {
-    alert('Please enter a todo item.');
+addTodoInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    addTodo();
   }
 });
-const todoItems = document.querySelectorAll('.todo-item');
-todoItems.forEach((todoItem) => {
-  const checkbox = todoItem.querySelector('.todo-checkbox');
-  const deleteBtn = todoItem.querySelector('.delete-btn');
-
-  checkbox.addEventListener('change', () => {
-    todoItem.classList.toggle('completed');
-    updateStats();
-  });
-
-  deleteBtn.addEventListener('click', () => {
-    todoItem.remove();
-    updateStats();
-  });
-});
-updateStats();
+renderTodos();
