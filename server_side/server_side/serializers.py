@@ -6,13 +6,11 @@ class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
         fields = ['id', 'title', 'is_completed', 'user']
-        # Ensure title is defined as a CharField
         extra_kwargs = {
             'title': {'required': True, 'allow_blank': False}
         }
 
 class UserSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']

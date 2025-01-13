@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-3*dpvp*gshn=c7i4s+q#a9_1tboos^86aqvbl#$m422gx1*%^c
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['127.0.0.1','[::1]']
+ALLOWED_HOSTS = ['127.0.0.1','[::1]',"2do-ivory.vercel.app",'https://2do-ivory.vercel.app']
 
 
 
@@ -152,5 +152,6 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
+    'https://2do-ivory.vercel.app'
 ]
 
