@@ -40,8 +40,8 @@ loginLink.addEventListener("click", showLoginForm);
 
 forgotPassword.addEventListener("click", function (e) {
   e.preventDefault();
-  window.location.href = "resetpassword.html";
   localStorage.setItem("email", document.getElementById("email").value);
   localStorage.setItem('username', document.getElementById("username").value);
+  window.location.href = "otp.html";
 
 });
